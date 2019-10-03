@@ -6,18 +6,18 @@
 		<div class="row">
 			<div class="col-sm-8 col-sm-offset-2 text-center">
 				<h1 class="single-movie-title">
-
+					<%= title %>
 				</h1>
 				
 				<h3 class="single-movie-title">
-
+					<%= tagLine %>
 				</h3>
 				
 
-				<img src="" />
+				<a href="<%= homepage %>"><img width="600px" src="<%= backdrop %>" /></a><br><br><br>
 				
 				<p class="overview-header">Movie Synopsis: <span class="single-movie-overview">
-					
+					<br><%= overview  %>
 				</span></p>
 			</div>
 		</div>
@@ -35,12 +35,30 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="myModalLabel">Movie Information</h4>
       </div>
       <div class="modal-body">
-
-
+		
+		<p><a href=" <%= imdb %>">IMDB Link</a></p><br>
+		<p>Budget:&nbsp&nbsp&nbsp&nbsp<%= budget %></p><br>
+		<p>Revenue:&nbsp&nbsp&nbsp&nbsp<%= revenue %></p><br>
+		<p>Movie Type:
+			<ul>
+				<% type.forEach((ele)=>{ %>
+					<li><%= ele.name %></li>
+				<% }) %>
+			</ul>
+			
+		</p><br>
+		<p>Production Companies:
+			<ul>
+				<% companies.forEach((ele)=>{ %>
+					<li><%= ele.name %></li>
+				<% }) %>
+			</ul>
+		</p><br>
+		<p>Released Date: &nbsp&nbsp&nbsp&nbsp<%= releaseDate %></p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

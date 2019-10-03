@@ -17,7 +17,7 @@
 				<% parsedData.forEach((movie)=>{ %>
 					<div class="col-md-3 col-sm-4 poster">
 						<p><%= movie.title %></p>
-						<img src="<%= imgBaseUrl + movie.poster_path %>">	
+						<a href="/movie/<%= movie.id %>"><img src="<%= imgBaseUrl + movie.poster_path %>"></a>
 					</div>
 				<% }) %>	
 			</div>

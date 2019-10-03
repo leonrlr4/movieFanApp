@@ -4,7 +4,7 @@ const request = require('request');
 
 const apiKey = '1fb720b97cc13e580c2c35e1138f90f8';
 const apiBaseUrl = 'http://api.themoviedb.org/3';
-const nowPlayingUrl = `${apiBaseUrl}/movie/now_playing?api_key=${apiKey}`;
+const nowPlayingUrl = `${apiBaseUrl}/movie/now_playing?api_key=${apiKey}&language=zh`;
 const imgBaseUrl = 'http://image.tmdb.org/t/p/w300';
 
 router.use((req, res, next) =>{
@@ -33,5 +33,37 @@ router.get('/', function(req, res, next) {
     })
   })
 });
+
+//movie/id is a wildcard route.
+//that means that :id is going to be stored in...
+router.get('/movie/:id', (req, res, next) =>{
+  const movieId = req.params.id
+  const thisMovieUrl = `${apiBaseUrl}/movie/${movieId}?api_key=${apiKey}`
+  // console.log(thisMovieUrl)
+  request.get(thisMovieUrl, (error, response, movieDetail)=>{
+    
+    const parsedData = JSON.parse(movieDetail)
+    const homepageUrl = parsedData.homepage;
+    const movieTitle = parsedData.name;
+    const movieOverview = parsedData.overview;
+
+    const types = parsedData.genres
+    // res.redirect(homepageUrl)
+    res.render('single-movie', {
+      homepage: parsedData.homepage,
+      title: parsedData.title,
+      backdrop: imgBaseUrl + parsedData.backdrop_path,
+      releaseDate: parsedData.release_date,
+      overview: parsedData.overview,
+      tagLine: parsedData.tagline,
+      imdb: "https://www.imdb.com/title/"+ parsedData.imdb_id,
+      budget: parsedData.budget,
+      revenue: parsedData.revenue,
+      type: types,
+      companies: parsedData.production_companies,
+      releaseDate: parsedData.release_date,
+    })
+  })
+})
 
 module.exports = router;
