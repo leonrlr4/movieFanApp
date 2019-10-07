@@ -27,7 +27,7 @@ router.get('/', function(req, res, next) {
     // console.log('============================================')
     // console.log(movieData)
     const parsedData = JSON.parse(movieData);
-    // res.json(parsedData)
+    // res.json(parsedData.results)
     res.render('index', {
       parsedData: parsedData.results
     })
@@ -43,9 +43,9 @@ router.get('/movie/:id', (req, res, next) =>{
   request.get(thisMovieUrl, (error, response, movieDetail)=>{
     
     const parsedData = JSON.parse(movieDetail)
-    const homepageUrl = parsedData.homepage;
-    const movieTitle = parsedData.name;
-    const movieOverview = parsedData.overview;
+    // const homepageUrl = parsedData.homepage;
+    // const movieTitle = parsedData.name;
+    // const movieOverview = parsedData.overview;
 
     const types = parsedData.genres
     // res.redirect(homepageUrl)
@@ -62,8 +62,58 @@ router.get('/movie/:id', (req, res, next) =>{
       type: types,
       companies: parsedData.production_companies,
       releaseDate: parsedData.release_date,
+    });
+  })
+});
+
+router.get('/search', (req, res, next)=>{
+  res.render('../views/navbar.ejs');
+})
+
+
+router.post('/search', (req, res, next)=>{
+  let searchTerm = encodeURI(req.body.movieSearch);
+  let cat = req.body.cat ;
+  let movieUrl = `${apiBaseUrl}/search/${cat}?query=${searchTerm}&api_key=${apiKey}`
+
+  console.log(`search way: ${cat}`)
+  console.log(`search keyword: ${searchTerm}`)
+  
+
+
+  request.get(movieUrl, (error, response, movieData)=>{
+    const parsedData =JSON.parse(movieData);
+
+    const x = (parsedData.results)
+    // res.json(x[0].known_for)
+    if (cat === "person") {
+      res.render('searchActor',{
+        parsedData: x
+      });
+      
+    } else {
+      res.render('searchMovie', {
+      parsedData: parsedData.results
     })
+    }
+
+
+    // x.forEach(element => {}
+    //   element.known_for.forEach(known=>{
+    //     console.log(known.title)
+    //   })
+    // });
+  //   if (cat === "person") {
+  //     res.render('search', {
+  //       parsedData: parsedData.results.known_for
+  //     })
+  //   }else{
+  //   res.render('search', {
+  //     parsedData: parsedData.results
+  //   })
+  // }
   })
 })
+
 
 module.exports = router;
