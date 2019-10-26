@@ -13,6 +13,8 @@
     "helmet": "^3.21.0",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
+    "passport": "^0.4.0",
+    "passport-github": "^1.1.0",
     "request": "^2.88.0"
   }
 }

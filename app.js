@@ -5,6 +5,11 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const helmet = require('helmet')
 
+//passport file =====================
+const passport = require('passport');
+const GitHubStrategy = require('passport-github').Strategy;
+//====================================
+
 var indexRouter = require('./routes/index');
 
 var app = express();
@@ -14,7 +19,19 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 //mmiddleware setup
-app.use(helmet())
+app.use(helmet());
+
+//=============================
+passport.use(new GitHubStrategy('./config.js',
+function(accessToken, refreshToken, profile, cb) {
+  User.findOrCreate({ githubId: profile.id }, function (err, user) {
+    return cb(err, user);
+  });
+}
+));
+
+//==============================
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
