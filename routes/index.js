@@ -20,11 +20,36 @@ router.use((req, res, next) =>{
   next()
 })
 
-router.get('/login', passport.authenticate('github'))
+try {
+  router.get('/login', passport.authenticate('github'))
+} catch (error) {
+  console.log(error)
+  res.status(404).send(error.toString());
+}
+
+router.get('/auth', passport.authenticate('github',{
+  successRedirect: '/',
+  failureRedirect: '/loginFailed'
+}))
+
+router.get('/favorites', (req,res)=>{
+  const users = req.user
+  console.log(users.username)
+  console.log(typeof(users))//object
+  res.json({
+    'you are logged in with': users
+  })
+})
+
+// router.get('/loginFailed', (req, res, next){
+
+// })
 
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
+  console.log('user info:')
+  console.log(req.user)
   //request takes 2 args"
   //1. it takes the URL to http "get"
   //2. the callback to run when http response is back => 3 args:
@@ -95,11 +120,11 @@ router.post('/search', (req, res, next)=>{
   request.get(movieUrl, (error, response, movieData)=>{
     const parsedData =JSON.parse(movieData);
 
-    const x = (parsedData.results)
+    const data = (parsedData.results)
     // res.json(x[0].known_for)
     if (cat === "person") {
       res.render('searchActor',{
-        parsedData: x
+        parsedData: data
       });
       
     } else {
@@ -107,7 +132,6 @@ router.post('/search', (req, res, next)=>{
       parsedData: parsedData.results
     })
     }
-
 
     // x.forEach(element => {}
     //   element.known_for.forEach(known=>{

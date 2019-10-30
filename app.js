@@ -3,9 +3,10 @@ const express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-const helmet = require('helmet')
-
+const helmet = require('helmet');
+// const express = require('express');
 //passport file =====================
+const session = require('express-session');
 const passport = require('passport');
 const GitHubStrategy = require('passport-github').Strategy;
 //====================================
@@ -21,15 +22,41 @@ app.set('view engine', 'ejs');
 //mmiddleware setup
 app.use(helmet());
 
-//=============================
-passport.use(new GitHubStrategy('./config.js',
-function(accessToken, refreshToken, profile, cb) {
-  User.findOrCreate({ githubId: profile.id }, function (err, user) {
-    return cb(err, user);
-  });
+
+//passport configuration=============================
+app.use(session({
+  secret: 'i love express',
+  resave: false,
+  saveUninitialized: true,
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+const passportConfig = require('./config')
+passport.use(new GitHubStrategy(passportConfig,
+//verify callback
+function(accessToken, refreshToken, profile, cb){
+  // console.log(profile)
+  return cb(null, profile);
 }
 ));
 
+// passport.serializeUser((user, cb)=>{
+//   cb(null, user);
+// })
+// passport.deserializeUser((user, cb)=>{
+//   cb(null, user);
+// })
+
+passport.serializeUser(function(user, done) {
+  done(null, user.id);
+});
+
+passport.deserializeUser(function(id, done) {
+  User.findById(id, function(err, user) {
+    done(err, user);
+  });
+});
 //==============================
 
 app.use(logger('dev'));
