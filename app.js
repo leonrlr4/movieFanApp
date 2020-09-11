@@ -22,24 +22,25 @@ app.set('view engine', 'ejs');
 //mmiddleware setup
 app.use(helmet());
 
-
 //passport configuration=============================
-app.use(session({
-  secret: 'i love express',
-  resave: false,
-  saveUninitialized: true,
-}));
+app.use(
+  session({
+    secret: 'i love express',
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 
 app.use(passport.initialize());
 app.use(passport.session());
-const passportConfig = require('./config')
-passport.use(new GitHubStrategy(passportConfig,
+// const passportConfig = require('./config')
+// passport.use(new GitHubStrategy(passportConfig,
 //verify callback
-function(accessToken, refreshToken, profile, cb){
-  // console.log(profile)
-  return cb(null, profile);
-}
-));
+// function(accessToken, refreshToken, profile, cb){
+//   // console.log(profile)
+//   return cb(null, profile);
+// }
+// ));
 
 // passport.serializeUser((user, cb)=>{
 //   cb(null, user);
@@ -48,12 +49,12 @@ function(accessToken, refreshToken, profile, cb){
 //   cb(null, user);
 // })
 
-passport.serializeUser(function(user, done) {
+passport.serializeUser(function (user, done) {
   done(null, user.id);
 });
 
-passport.deserializeUser(function(id, done) {
-  User.findById(id, function(err, user) {
+passport.deserializeUser(function (id, done) {
+  User.findById(id, function (err, user) {
     done(err, user);
   });
 });
@@ -68,12 +69,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
